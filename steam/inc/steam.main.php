@@ -18,7 +18,7 @@ if (is_null($steam_html))
 	{
 		$selected = $key == $appid ? 'selected="selected"' : '';
 		$url = $key == $cfg['steam']['defaultid'] ? cot_url('steam') : cot_url('steam', 'game='.$val['code']);
-		$jumpbox .= '<option value="'.$url.'" '.$selected.' onclick="redirect(this)">'. htmlspecialchars($val['name']).'</option>';
+		$jumpbox .= '<option value="'.$url.'" '.$selected.'>'. htmlspecialchars($val['name']).'</option>';
 	}
 
 	$t->assign(array(

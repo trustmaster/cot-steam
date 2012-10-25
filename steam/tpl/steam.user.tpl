@@ -4,7 +4,7 @@
 
 	<p>
 		<div class="steam_gameselector">
-			<select name="steamgame" id="steamGame">
+			<select name="steamgame" id="steamGame" onchange="redirect(this)">
 				{STEAM_GAME_SELECTOR}
 			</select>
 		</div>
