@@ -35,7 +35,6 @@ class SteamUtility {
 			curl_setopt($handle, CURLOPT_URL, $url);
 			curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($handle, CURLOPT_TIMEOUT, self::$connectTimeout);
-			curl_setopt($handle, CURLOPT_FOLLOWLOCATION, true);
 			return curl_exec($handle);
 		}
 		else
