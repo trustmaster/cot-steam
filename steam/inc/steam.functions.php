@@ -247,6 +247,11 @@ function steam_sync_games()
 
 		$schema = $steamGame->getSchema();
 
+		if (!is_array($schema))
+		{
+			return false;
+		}
+
 		// Save achievements in our db
 		$rowset = array();
 		foreach ($schema['achievements'] as $row)
