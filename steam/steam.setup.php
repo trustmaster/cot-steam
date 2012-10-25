@@ -17,7 +17,7 @@ Lock_members=12345
 [END_COT_EXT]
 
 [BEGIN_COT_EXT_CONFIG]
-apikey=01:string::FB2747FDCAE8C6985730244778764639:Steam API key
+apikey=01:string:::Steam API key
 games=02:text::71270|FM2012|Football Manager 2012:Games to grab data for (one per line, format appid|SteamCommunityName|Full Name), one per line
 defaultid=03:string::71270:Default game appid
 recent=04:string::5:Recent achievements on main page
