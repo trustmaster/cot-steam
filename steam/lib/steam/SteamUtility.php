@@ -21,21 +21,21 @@ class SteamUtility {
 	 */
 	public static function fetchURL($url)
 	{
-		if (self::iniGetBool('allow_url_fopen'))
-		{
-			$ctx = stream_context_create(array(
-				'http' => array(
-					'timeout' => self::$connectTimeout
-			)));
-			return file_get_contents($url, false, $ctx);
-		}
-		elseif (function_exists('curl_init'))
+		if (function_exists('curl_init'))
 		{
 			$handle = curl_init();
 			curl_setopt($handle, CURLOPT_URL, $url);
 			curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($handle, CURLOPT_TIMEOUT, self::$connectTimeout);
 			return curl_exec($handle);
+		}
+		elseif (self::iniGetBool('allow_url_fopen'))
+		{
+			$ctx = stream_context_create(array(
+				'http' => array(
+					'timeout' => self::$connectTimeout
+			)));
+			return file_get_contents($url, false, $ctx);
 		}
 		else
 		{
