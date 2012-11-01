@@ -94,7 +94,7 @@ class SteamUser {
 				$this->memberSince = (string)$parsedData->memberSince;
 
 				$this->steamRating = (float)$parsedData->steamRating;
-				$this->hoursPlayed2Wk = (float)$parsedData->hoursPlayed2Wk;
+				$this->hoursPlayed2Wk = (float)str_replace(',', '', $parsedData->hoursPlayed2Wk);
 
 				$this->headline = (string)$parsedData->headline;
 				$this->location = (string)$parsedData->location;
@@ -123,8 +123,8 @@ class SteamUser {
 					$this->mostPlayedGames[$i]->gameIcon = (string)$mostPlayedGame->gameIcon;
 					$this->mostPlayedGames[$i]->gameLogo = (string)$mostPlayedGame->gameLogo;
 					$this->mostPlayedGames[$i]->gameLogoSmall = (string)$mostPlayedGame->gameLogoSmall;
-					$this->mostPlayedGames[$i]->hoursPlayed = (string)$mostPlayedGame->hoursPlayed;
-					$this->mostPlayedGames[$i]->hoursOnRecord = (string)$mostPlayedGame->hoursOnRecord;
+					$this->mostPlayedGames[$i]->hoursPlayed = (string)str_replace(',', '', $mostPlayedGame->hoursPlayed);
+					$this->mostPlayedGames[$i]->hoursOnRecord = (string)str_replace(',', '', $mostPlayedGame->hoursOnRecord);
 					$this->mostPlayedGames[$i]->statsName = (string)$mostPlayedGame->statsName;
 					$i++;
 				}
@@ -236,8 +236,8 @@ class SteamUser {
 				$this->gamesList[$i]->name = (string)$game->name;
 				$this->gamesList[$i]->logo = (string)$game->logo;
 				$this->gamesList[$i]->storeLink = (string)$game->storeLink;
-				$this->gamesList[$i]->hoursLast2Weeks = (float)$game->hoursLast2Weeks;
-				$this->gamesList[$i]->hoursOnRecord = (float)$game->hoursOnRecord;
+				$this->gamesList[$i]->hoursLast2Weeks = (float)str_replace(',', '', $game->hoursLast2Weeks);
+				$this->gamesList[$i]->hoursOnRecord = (float)str_replace(',', '', $game->hoursOnRecord);
 				$this->gamesList[$i]->statsLink = (string)$game->statsLink;
 				$this->gamesList[$i]->globalStatsLink = (string)$game->globalStatsLink;
 				$i++;
