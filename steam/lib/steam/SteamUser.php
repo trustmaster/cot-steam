@@ -118,6 +118,7 @@ class SteamUser {
 
 				$i = 0;
 				foreach ($parsedData->mostPlayedGames->mostPlayedGame as $mostPlayedGame) {
+					$this->mostPlayedGames[$i] = new stdClass();
 					$this->mostPlayedGames[$i]->gameName = (string)$mostPlayedGame->gameName;
 					$this->mostPlayedGames[$i]->gameLink = (string)$mostPlayedGame->gameLink;
 					$this->mostPlayedGames[$i]->gameIcon = (string)$mostPlayedGame->gameIcon;
@@ -148,6 +149,7 @@ class SteamUser {
 
 				$i = 0;
 				foreach ($parsedData->groups->group as $group) {
+					$this->groups[$i] = new stdClass();
 					$this->groups[$i]->groupID64 = (string)$group->groupID64;
 					$this->groups[$i]->groupName = (string)$group->groupName;
 					$this->groups[$i]->groupURL = (string)$group->groupURL;
@@ -220,10 +222,12 @@ class SteamUser {
 			if ($content) {
 				$gamesData = new SimpleXMLElement($content);
 			} else {
+				//cot_watch($base, $content);
 				return null;
 			}
 		} catch (Exception $e) {
 			// Usually happens when service is down
+			//cot_watch($base, $content);
 			return null;
 		}
 
@@ -232,6 +236,7 @@ class SteamUser {
 
 			$i = 0;
 			foreach ($gamesData->games->game as $game) {
+				$this->gamesList[$i] = new stdClass();
 				$this->gamesList[$i]->appID = (string)$game->appID;
 				$this->gamesList[$i]->name = (string)$game->name;
 				$this->gamesList[$i]->logo = (string)$game->logo;
@@ -298,6 +303,51 @@ class SteamUser {
 
 			return $achievements;
 		}
+	}
+
+	/**
+	 * Returns achievements fetched via API.steampowered.com.
+	 * Requires 64-bit steamID for current user.
+	 * @param  integer $appID Game appID
+	 * @return array          Array of achievement objects or NULL on failure
+	 */
+	function getAchievements2($appID) {
+		$base = "http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid={$appID}&key={$this->apiKey}&steamid={$this->userID}&l=en";
+
+		$json = SteamUtility::fetchURL($base);
+		if(!$json) {
+			//cot_watch($json, $base);
+			return null;
+		}
+
+		$data = json_decode($json, true);
+
+		if (!$data) {
+			//cot_watch($data, $json);
+			return null;
+		}
+
+		$achievements = array();
+
+		//cot_watch($data, $data['playerstats']['achievements']);
+
+		if (isset($data['playerstats']['achievements'])) {
+			foreach ($data['playerstats']['achievements'] as $ach) {
+				$item = new stdClass();
+				$item->apiname     = (string)$ach['apiname'];
+				$item->name        = (string)$ach['name'];
+				$item->description = (string)$ach['description'];
+				$item->unlockTimestamp = 0;
+				if ($ach['achieved'] == 1) {
+					$item->unlocked  = 1;
+				} else {
+					$item->unlocked  = 0;
+				}
+				$achievements[] = $item;
+			}
+		}
+
+		return $achievements;
 	}
 
 	/**

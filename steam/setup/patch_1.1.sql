@@ -1,0 +1,1 @@
+ALTER TABLE `cot_steam_user_achievements` ADD COLUMN `sua_up2date` TINYINT NOT NULL DEFAULT 1;

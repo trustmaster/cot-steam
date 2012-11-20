@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `cot_steam_user_achievements` (
 	`sua_apiname` VARCHAR(128) NOT NULL,
 	`sua_unlocked` TINYINT NOT NULL DEFAULT 0,
 	`sua_unlock_date` INT NOT NULL DEFAULT 0,
+	`sua_up2date` TINYINT NOT NULL DEFAULT 1,
 	PRIMARY KEY (`sua_userid`, `sua_appid`, `sua_apiname`),
 	KEY (`sua_unlock_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -4,8 +4,8 @@
 Code=steam
 Name=Steam
 Description=Steam Achievments Tracker
-Version=1.0.3
-Date=2012-10-25
+Version=1.1
+Date=2012-11-20
 Author=Trustmaster
 Copyright=(c) Vladimir Sibirov and FMScout.com 2012
 Notes=BSD License

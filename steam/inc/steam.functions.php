@@ -278,7 +278,7 @@ function steam_sync_games()
  */
 function steam_sync_user($usr)
 {
-	global $cfg, $db, $db_steam_user_hours, $db_steam_user_achievements;
+	global $cfg, $db, $db_steam_user_hours, $db_steam_user_achievements, $sys;
 
 	if (!empty($usr['profile']['user_steamid']))
 	{
@@ -304,6 +304,8 @@ function steam_sync_user($usr)
 	$gameList = $steamUser->getGamesList();
 	if (!is_array($gameList))
 	{
+		// API failure, retry later
+		//cot_watch($gameList);
 		return false;
 	}
 
@@ -320,10 +322,47 @@ function steam_sync_user($usr)
 
 			// Update achievements
 			$steamAchievements = $steamUser->getAchievements($games[$game->appID]['code']);
-			$savedAchievements = $db->query("SELECT sua_apiname, sua_unlocked
+
+			$up2date = 1;
+
+			if (is_null($steamAchievements))
+			{
+				// SteamCommunity failure
+				if (is_numeric($steamID))
+				{
+					// Retry with API.SteamPowered.com
+					$steamAchievements = $steamUser->getAchievements2($game->appID);
+					if (is_null($steamAchievements))
+					{
+						// Failure, retry later
+						//cot_watch($game->appID, $steamID);
+						return false;
+					}
+					else
+					{
+						//cot_watch($steamAchievements);
+						$up2date = 0;
+					}
+				}
+				else
+				{
+					// vanityURL unsupported, retry later
+					//cot_watch($steamID);
+					return false;
+				}
+			}
+			// else
+			// {
+			// 	cot_watch($steamAchievements);
+			// }
+
+			$savedAchievements = $db->query("SELECT sua_apiname, sua_unlocked, sua_up2date
 				FROM $db_steam_user_achievements
 				WHERE sua_userid = ? AND sua_appid = ?", array($usr['id'], $game->appID))
 				->fetchAll();
+
+
+			//cot_watch(count($savedAchievements), count($steamAchievements));
 
 			if (!is_null($steamAchievements) && count($steamAchievements) > 0)
 			{
@@ -338,7 +377,8 @@ function steam_sync_user($usr)
 						if ($row['sua_apiname'] == $ach->apiname)
 						{
 							$found = true;
-							if ($row['sua_unlocked'] != $ach->unlocked && $ach->unlocked)
+							if (($row['sua_unlocked'] != $ach->unlocked && $ach->unlocked)
+								|| ($up2date && !$row['sua_up2date']))
 							{
 								$changed = true;
 							}
@@ -353,7 +393,8 @@ function steam_sync_user($usr)
 							'sua_appid'       => (int) $game->appID,
 							'sua_apiname'     => $ach->apiname,
 							'sua_unlocked'    => $ach->unlocked,
-							'sua_unlock_date' => $ach->unlockTimestamp
+							'sua_unlock_date' => $up2date ? $ach->unlockTimestamp : $sys['now'],
+							'sua_up2date'     => $up2date
 						);
 					}
 					elseif ($changed)
@@ -361,7 +402,8 @@ function steam_sync_user($usr)
 						// Update achievement state
 						$db->update($db_steam_user_achievements, array(
 								'sua_unlocked'    => 1,
-								'sua_unlock_date' => $ach->unlockTimestamp
+								'sua_unlock_date' => $up2date ? $ach->unlockTimestamp : $sys['now'],
+								'sua_up2date'     => $up2date
 							),
 							"sua_userid = ? AND sua_appid = ? AND sua_apiname = ?",
 							array((int) $usr['id'], (int) $game->appID, $ach->apiname)

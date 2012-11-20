@@ -12,7 +12,7 @@
 */
 class SteamUtility {
 
-	public static $connectTimeout = 2; // 2 seconds
+	public static $connectTimeout = 5; // 2 seconds
 
 	/**
 	 * Fetches content of a given URL via HTTP GET method.
