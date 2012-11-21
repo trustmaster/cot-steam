@@ -377,7 +377,7 @@ function steam_sync_user($usr)
 						if ($row['sua_apiname'] == $ach->apiname)
 						{
 							$found = true;
-							if (($row['sua_unlocked'] != $ach->unlocked && $ach->unlocked)
+							if (($row['sua_unlocked'] != $ach->unlocked)
 								|| ($up2date && !$row['sua_up2date']))
 							{
 								$changed = true;
