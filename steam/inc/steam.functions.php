@@ -401,7 +401,7 @@ function steam_sync_user($usr)
 					{
 						// Update achievement state
 						$db->update($db_steam_user_achievements, array(
-								'sua_unlocked'    => 1,
+								'sua_unlocked'    => $ach->unlocked,
 								'sua_unlock_date' => $up2date ? $ach->unlockTimestamp : $sys['now'],
 								'sua_up2date'     => $up2date
 							),
